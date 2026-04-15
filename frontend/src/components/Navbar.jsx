@@ -1,5 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
 
+// Icon-kan yar wuxuu u taagan yahay Home button-ka navbar-ka.
+// Waxaan u samaynay SVG si aan icon dibadda uga import-gareyn.
 function HomeIcon() {
   return (
     <svg
@@ -12,6 +14,8 @@ function HomeIcon() {
   );
 }
 
+// Icon-kan wuxuu u taagan yahay Add Book button-ka.
+// Waxaa loo sameeyay qaab plus-sign ah si uu user-ka ugu iftiimiyo action-ka abuurista.
 function AddIcon() {
   return (
     <svg
@@ -25,7 +29,12 @@ function AddIcon() {
   );
 }
 
+// Navbar-kan waa qaybta kore ee app-ka.
+// Wuxuu hayaa magaca BookStore iyo navigation-ka pages-ka muhiimka ah.
 function Navbar() {
+  // Function-kan wuxuu go'aamiyaa style-ka link kasta iyadoo la eegayo
+  // haddii route-kaas hadda la joogo iyo in kale. Taasi waxay ka dhigaysaa
+  // button-ka active-ka ah inuu si muuqata uga duwanaado kuwa kale.
   const navLinkClassName = ({ isActive }) =>
     `inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-base font-medium transition ${
       isActive
@@ -35,8 +44,11 @@ function Navbar() {
 
   return (
     <header className="mb-8">
+      {/* nav-kan waa wrapper-ka menu-ga oo dhan */}
       <nav className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-slate-300 bg-[#d7dbe2]/80 px-6 py-3 shadow-sm backdrop-blur">
+        {/* Magaca bidix ee BookStore marka la taabto wuxuu user-ka geeynayaa home route-ka */}
         <Link to="/" className="relative flex items-center">
+          {/* Circle-ka huruudka ahi waa accent yar oo design-ka qurxinaya */}
           <span className="absolute left-[-14px] top-1/2 h-16 w-16 -translate-y-1/2 rounded-full bg-yellow-200/35 blur-[1px]" />
           <span className="relative text-[2rem] font-black tracking-tight">
             <span className="text-teal-500">Book</span>
@@ -44,12 +56,15 @@ function Navbar() {
           </span>
         </Link>
 
+        {/* Qaybtan midig waxaa yaal navigation buttons-ka muhiimka ah */}
         <div className="flex flex-wrap items-center gap-3">
+          {/* Home route */}
           <NavLink to="/" end className={navLinkClassName}>
             <HomeIcon />
             <span>Home</span>
           </NavLink>
 
+          {/* Add Book route */}
           <NavLink to="/add-book" className={navLinkClassName}>
             <AddIcon />
             <span>Add Book</span>
