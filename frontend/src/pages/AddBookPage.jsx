@@ -59,6 +59,16 @@ function AddBookPage() {
           />
         </label>
 
+        {/* Field-kan waa meesha aad ka gelin karto link-ga sawirka book-ga */}
+        <label className="grid gap-2 text-sm font-medium text-slate-700">
+          Cover Image URL
+          <input
+            type="url"
+            placeholder="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=800&q=80"
+            className="rounded-xl border border-slate-300 bg-stone-50 px-4 py-3 outline-none transition focus:border-orange-400"
+          />
+        </label>
+
         {/* Field-ka price */}
         <label className="grid gap-2 text-sm font-medium text-slate-700">
           Price

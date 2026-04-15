@@ -95,7 +95,7 @@ function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-6 grid gap-4">
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {/* Marka request-ku socdo, fariin loading ah ayaan muujineynaa */}
           {isLoading ? (
             <article className="rounded-[1.5rem] border border-slate-200 bg-stone-50 p-5 text-sm text-slate-600">
