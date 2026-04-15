@@ -1,9 +1,13 @@
+import mongoose from 'mongoose';
 import Book from '../models/bookmodel.js';
 
 // Function-kan wuxuu soo celiyaa dhammaan buugaagta ku jirta database-ka.
 export const getAllBooks = async (request, response) => {
     try {
-        const books = await Book.find({});
+        // Halkan waxaan ka soo qaadeynaa dhammaan books-ka ku jira database-ka.
+        // lean() wuxuu ka dhigaa response-ka mid sahlan oo degdeg ah maadaama aan kaliya akhrineyno xogta.
+        const books = await Book.find({}).lean();
+
         return response.status(200).json(books);
     } catch (error) {
         return response.status(500).json({ message: error.message });
@@ -12,9 +16,18 @@ export const getAllBooks = async (request, response) => {
 
 // Function-kan wuxuu soo saaraa hal book iyadoo lagu raadinayo id-ga URL-ka ku jira.
 export const getBookById = async (request, response) => {
+    // Halkan waxaan ka qaadaneynaa id-ga laga soo diray URL-ka.
+    const { id } = request.params;
+
+    // Haddii id-ga uusan ahayn MongoDB ObjectId sax ah, request-ka waa la diidayaa.
+    if (!mongoose.isValidObjectId(id)) {
+        return response.status(400).json({ message: 'Invalid book id' });
+    }
+
     try {
-        const { id } = request.params;
-        const book = await Book.findById(id);
+        // Halkan waxaan ku raadineynaa hal book anagoo adeegsaneyna Mongoose method-ka findById().
+        // lean() wuxuu soo celinayaa plain object, taas oo ku fiican marka aan response ahaan u dirayno xogta.
+        const book = await Book.findById(id).lean();
 
         // Haddii book-ga la waayo, 404 ayaa la celinayaa.
         if (!book) {
@@ -67,7 +80,14 @@ export const saveBook = async (request, response) => {
 // Function-kan wuxuu cusbooneysiiyaa book jira iyadoo la adeegsanayo id-ga.
 export const updateBook = async (request, response) => {
     const { id } = request.params;
+
+    // Halkan waxaan ka qaadaneynaa xogta cusub ee lagu update gareynayo book-ga.
     const updateData = request.body ?? {};
+
+    // Haddii id-ga uusan sax ahayn, request-ka waa la diidayaa.
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return response.status(400).json({ message: 'Invalid book id' });
+    }
 
     // Haddii body-gu madhan yahay, lama hayo wax la update gareeyo.
     if (Object.keys(updateData).length === 0) {
@@ -77,6 +97,7 @@ export const updateBook = async (request, response) => {
     }
 
     try {
+        // Halkan waxaan ku update gareyneynaa book-ga la helay.
         // new: true wuxuu soo celinayaa xogta cusub, runValidators-na wuxuu hubiyaa schema-ga.
         const updatedBook = await Book.findByIdAndUpdate(id, updateData, {
             new: true,
@@ -90,7 +111,7 @@ export const updateBook = async (request, response) => {
 
         return response.status(200).json(updatedBook);
     } catch (error) {
-        return response.status(400).json({ message: error.message });
+        return response.status(500).json({ message: error.message });
     }
 };
 
@@ -98,7 +119,13 @@ export const updateBook = async (request, response) => {
 export const deleteBook = async (request, response) => {
     const { id } = request.params;
 
+    // Haddii id-ga uusan sax ahayn, request-ka waa la diidayaa.
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return response.status(400).json({ message: 'Invalid book id' });
+    }
+
     try {
+        // Halkan waxaan ku tirtireynaa book-ga id-giisa lagu helay.
         const deletedBook = await Book.findByIdAndDelete(id);
 
         // Haddii book-ga la tirtirayo la waayo, 404 ayaa la celinayaa.
@@ -109,6 +136,6 @@ export const deleteBook = async (request, response) => {
         // Haddii tirtiriddu guuleysato, fariin guul ah ayaa la celinayaa.
         return response.status(200).json({ message: 'Book deleted successfully' });
     } catch (error) {
-        return response.status(400).json({ message: error.message });
+        return response.status(500).json({ message: error.message });
     }
 };
