@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Book from '../models/bookmodel.js';
 
-// Function-kan wuxuu soo celiyaa dhammaan buugaagta ku jirta database-ka.
+// Get all books end-point
 export const getAllBooks = async (request, response) => {
     try {
         // Halkan waxaan ka soo qaadeynaa dhammaan books-ka ku jira database-ka.
@@ -14,7 +14,7 @@ export const getAllBooks = async (request, response) => {
     }
 };
 
-// Function-kan wuxuu soo saaraa hal book iyadoo lagu raadinayo id-ga URL-ka ku jira.
+// Get single book end-point
 export const getBookById = async (request, response) => {
     // Halkan waxaan ka qaadaneynaa id-ga laga soo diray URL-ka.
     const { id } = request.params;
@@ -40,7 +40,7 @@ export const getBookById = async (request, response) => {
     }
 };
 
-// Function-kan wuxuu keydiyaa book cusub oo laga soo diray request body-ga.
+// Create book end-point
 export const saveBook = async (request, response) => {
     // Halkan waxaan ka qaadaneynaa xogta uu user-ku soo diray.
     const bookData = request.body ?? {};
@@ -115,12 +115,12 @@ export const updateBook = async (request, response) => {
     }
 };
 
-// Function-kan wuxuu tirtiraa book iyadoo lagu saleynayo id-ga.
+// Delete book end-point
 export const deleteBook = async (request, response) => {
     const { id } = request.params;
 
     // Haddii id-ga uusan sax ahayn, request-ka waa la diidayaa.
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.isValidObjectId(id)) {
         return response.status(400).json({ message: 'Invalid book id' });
     }
 

@@ -9,19 +9,19 @@ import {
 
 const router = Router();
 
-// Route-kan wuxuu soo celiyaa dhammaan buugaagta.
+// Get all books end-point
 router.get('/', getAllBooks);
 
-// Route-kan wuxuu soo celiyaa hal book iyadoo id-ga lagu raadinayo.
+// Get single book end-point
 router.get('/:id', getBookById);
 
-// Route-kan wuxuu keydiyaa book cusub.
+// Create book end-point
 router.post('/', saveBook);
 
-// Route-kan wuxuu cusbooneysiiyaa book jira iyadoo la adeegsanayo id-ga.
+// Update book end-point
 router.put('/:id', updateBook);
 
-// Route-kan wuxuu tirtiraa book iyadoo la adeegsanayo id-ga.
+// Delete book end-point
 router.delete('/:id', deleteBook);
 
 export default router;
