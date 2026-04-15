@@ -9,6 +9,7 @@ const emptyFormData = {
   cover_image_url: '',
 };
 
+// Helper-kan wuxuu ka sameeyaa state diyaar u ah form-ka iyadoo laga duulayo book-ga la edit-gareynayo.
 function createFormState(book) {
   if (!book) {
     return emptyFormData;
@@ -37,6 +38,7 @@ function UpdateBookModal({
   const [formData, setFormData] = useState(emptyFormData);
   const [validationError, setValidationError] = useState('');
 
+  // Marka modal-ka furmo ama book-ga la beddelo, form-ka waxaan ku shubaynaa xogta book-gaas.
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -69,6 +71,7 @@ function UpdateBookModal({
   const previewPrice = formData.price || '20';
   const previewImage = formData.cover_image_url.trim();
 
+  // handleChange-kan wuxuu update gareeyaa input kasta oo user-ku beddelo.
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((currentData) => ({
@@ -77,6 +80,7 @@ function UpdateBookModal({
     }));
   };
 
+  // validateForm-kan wuxuu xaqiijiyaa in fields-ka muhiimka ahi madhnaan.
   const validateForm = () => {
     if (
       !formData.title.trim() ||
@@ -91,6 +95,7 @@ function UpdateBookModal({
     return '';
   };
 
+  // submit-kan wuxuu form data-ga cusub u diraa component-ka kore si API request-ka loo sameeyo.
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -123,12 +128,14 @@ function UpdateBookModal({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/45 px-4 py-8">
+      {/* Backdrop-kan wuxuu user-ka siinayaa meel uu ka xiro modal-ka */}
       <div
         className="fixed inset-0"
         aria-hidden="true"
         onClick={onClose}
       />
 
+      {/* Qaybtan bidix waxaa yaal form-ka, midigtana live preview-ga */}
       <div className="relative mx-auto grid w-full max-w-5xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-[2rem] bg-white p-6 shadow-2xl shadow-slate-900/15 sm:p-8">
           <div className="flex flex-col gap-3 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">

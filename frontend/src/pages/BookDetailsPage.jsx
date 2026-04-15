@@ -4,6 +4,7 @@ import ConfirmationDialog from '../components/ConfirmationDialog.jsx';
 import UpdateBookModal from '../components/UpdateBookModal.jsx';
 import useBookStore from '../store/useBookStore.js';
 
+// Helper-kan wuxuu taariikhda details page-ka uga dhigaa qaab saaxiibtinimo leh.
 function formatDate(dateValue) {
   if (!dateValue) {
     return 'N/A';
@@ -33,9 +34,13 @@ function BookDetailsPage() {
   const [bookToEdit, setBookToEdit] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
+  // selectedBook-kan wuxuu marka hore ka eegaa list-ka store-ka ku jira,
+  // haddii aan laga helinna activeBook-ka ayuu isticmaalayaa.
   const bookFromList = books.find((item) => item._id === id);
   const selectedBook = bookFromList ?? (activeBook?._id === id ? activeBook : null);
 
+  // useEffect-kan wuxuu xaqiijiyaa in page-ku helo book-ga saxda ah,
+  // xitaa haddii user-ku si toos ah URL uga soo galo browser-ka.
   useEffect(() => {
     if (bookFromList) {
       const shouldSyncActiveBook =
@@ -156,6 +161,7 @@ function BookDetailsPage() {
 
   return (
     <>
+      {/* Hero section-kan sare wuxuu soo bandhigayaa cinwaanka book-ga iyo actions-ka ugu muhiimsan */}
       <section className="overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,_#111827_0%,_#1f2937_55%,_#7c2d12_100%)] px-6 py-8 text-white shadow-2xl sm:px-8">
         <Link
           to="/"
@@ -189,6 +195,7 @@ function BookDetailsPage() {
         </div>
       </section>
 
+      {/* Qaybtan hoose bidix waxaa yaal cover-ka, midigtana faahfaahinta buuxda ee book-ga */}
       <section className="mt-8 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
         <article className="rounded-[2rem] bg-white p-6 shadow-lg shadow-slate-200/70 sm:p-8">
           <div className="rounded-[1.6rem] bg-[linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_100%)] p-6">

@@ -38,12 +38,14 @@ function ConfirmationDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 py-6">
+      {/* Backdrop-kan marka la taabto wuxuu xiraa dialog-ka */}
       <div
         className="absolute inset-0"
         aria-hidden="true"
         onClick={onClose}
       />
 
+      {/* Box-kan dhexe waa meesha fariinta iyo buttons-ku kasoo muuqdaan */}
       <div className="relative w-full max-w-md rounded-[2rem] bg-white p-6 shadow-2xl shadow-slate-900/15 sm:p-7">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-rose-100 text-rose-700">
           <svg

@@ -1,21 +1,28 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
+// connectDB function-kan waa meesha backend-ku uga xirmayo MongoDB.
+// Wuxuu akhriyaa LOCAL_MONGO_DB_URI oo ku jira .env.
 const connectDB = async () => {
-    const mongoURI = process.env.LOCAL_MONGO_DB_URI;
+  const mongoURI = process.env.LOCAL_MONGO_DB_URI;
 
-    if (!mongoURI) {
-        console.error("LOCAL_MONGO_DB_URI is not defined.");
-        process.exit(1);
-    }
+  // Haddii env variable-ku maqan yahay, app-ku ma sii socon karo sababtoo ah
+  // database la'aan CRUD operations-ku ma shaqaynayaan.
+  if (!mongoURI) {
+    console.error('LOCAL_MONGO_DB_URI is not defined.');
+    process.exit(1);
+  }
 
-    try {
-        const connection = await mongoose.connect(mongoURI);
+  try {
+    // mongoose.connect() wuxuu sameynayaa connection-ka dhabta ah ee MongoDB.
+    const connection = await mongoose.connect(mongoURI);
 
-        console.log(`MongoDB connected: ${connection.connection.host}`);
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error.message);
-        process.exit(1);
-    }
+    console.log(`MongoDB connected: ${connection.connection.host}`);
+  } catch (error) {
+    // Haddii connection-ku dhaco, error-ka waan soo bandhigaynaa
+    // kadibna process-ka waan joojinaynaa si app-ku uusan half-working u noqon.
+    console.error('Error connecting to MongoDB:', error.message);
+    process.exit(1);
+  }
 };
 
 export default connectDB;

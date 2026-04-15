@@ -1,3 +1,4 @@
+// Icon-kan waxaa loo isticmaalaa More button-ka si user-ku u galo details page-ka.
 function MoreIcon() {
   return (
     <svg
@@ -13,6 +14,7 @@ function MoreIcon() {
   );
 }
 
+// Icon-kan wuxuu metelaa action-ka edit-ka ee card-ka hoose.
 function EditIcon() {
   return (
     <svg
@@ -26,6 +28,7 @@ function EditIcon() {
   );
 }
 
+// Icon-kan wuxuu metelaa delete action-ka ee card-ka hoose.
 function DeleteIcon() {
   return (
     <svg
@@ -40,6 +43,7 @@ function DeleteIcon() {
   );
 }
 
+// formatDate helper-kan wuxuu taariikhda ka dhigaa string la akhrin karo.
 function formatDate(dateValue) {
   if (!dateValue) {
     return 'N/A';
@@ -99,6 +103,7 @@ function BookCard({ book, onViewDetails, onEdit, onDelete }) {
       </div>
 
       <div className="flex flex-wrap items-center gap-4 border-t border-indigo-100 pt-3 text-[0.95rem] text-rose-700">
+        {/* More button-kan wuxuu user-ka geeyaa page-ka faahfaahinta buugga */}
         <button
           type="button"
           onClick={() => onViewDetails(book)}
@@ -108,6 +113,7 @@ function BookCard({ book, onViewDetails, onEdit, onDelete }) {
           <span>More</span>
         </button>
 
+        {/* Edit button-kan wuxuu furaa update modal-ka book-kan */}
         <button
           type="button"
           onClick={() => onEdit(book)}
@@ -117,6 +123,7 @@ function BookCard({ book, onViewDetails, onEdit, onDelete }) {
           <span>Edit</span>
         </button>
 
+        {/* Delete button-kan wuxuu furaa confirmation dialog-ka ka hor tirtirista */}
         <button
           type="button"
           onClick={() => onDelete(book)}
