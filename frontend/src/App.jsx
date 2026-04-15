@@ -37,8 +37,8 @@ function App() {
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-orange-300">
             Sample Example
           </p>
-          <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">
-            Book Store Management System
+          <h1 className="mt-4 bg-gradient-to-r from-orange-300 via-amber-100 to-white bg-clip-text text-4xl font-black leading-tight text-transparent sm:text-5xl">
+            Book Store
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
             Tani waa sample page fudud oo aad ka sii bilaabi karto frontend-kaaga.

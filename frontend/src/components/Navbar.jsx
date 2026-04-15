@@ -12,13 +12,13 @@ function Navbar() {
         <div className="flex items-center justify-between gap-4">
           <a href="#" className="flex items-center gap-3">
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-sm font-bold text-white">
-              BS
+              BK
             </span>
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-orange-500">
-                BSMS
+                Book Store
               </p>
-              <h2 className="text-lg font-bold text-slate-900">Library Frontend</h2>
+              <h2 className="text-lg font-bold text-slate-900">Book Store</h2>
             </div>
           </a>
 
