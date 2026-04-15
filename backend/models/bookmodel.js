@@ -16,13 +16,18 @@ const bookSchema = new mongoose.Schema({
     },
     language: {
         type: String,
-        required: true, 
+        required: true,
     },
-    cover_image_url: {type: String},
-      price:{type: Number, required: true},}, {
+    cover_image_url: {
+        type: String,
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+}, {
     timestamps: true,
 });
-{timestamps: true} // this will automatically add createdAt and updatedAt fields
 
 // model for book
 const Book = mongoose.model('Book', bookSchema);
