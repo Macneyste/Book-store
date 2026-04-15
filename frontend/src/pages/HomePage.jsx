@@ -1,18 +1,32 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import BookCard from '../components/BookCard.jsx';
+import ConfirmationDialog from '../components/ConfirmationDialog.jsx';
+import UpdateBookModal from '../components/UpdateBookModal.jsx';
 import useBookStore from '../store/useBookStore.js';
 
 // HomePage waa page-ka ugu weyn ee user-ku arko marka uu galo app-ka.
 // Waxay soo bandhigaysaa books-ka backend-ka laga keenay, stats kooban,
 // iyo qaybo sample ah oo muujinaya sida dashboard-ku u shaqayn karo.
 function HomePage() {
+  const navigate = useNavigate();
+
   // Zustand selectors-kan waxay store-ka ka soo saarayaan qaybo yar oo aan u baahannahay.
   // Habkan wuxuu ka dhigaa component-ka mid nadiif ah oo state-ka si dhexe uga isticmaala.
   const books = useBookStore((state) => state.books);
   const isLoading = useBookStore((state) => state.isLoading);
+  const isUpdating = useBookStore((state) => state.isUpdating);
+  const isDeleting = useBookStore((state) => state.isDeleting);
   const error = useBookStore((state) => state.error);
+  const updateError = useBookStore((state) => state.updateError);
+  const deleteError = useBookStore((state) => state.deleteError);
   const fetchBooks = useBookStore((state) => state.fetchBooks);
+  const updateBook = useBookStore((state) => state.updateBook);
+  const deleteBook = useBookStore((state) => state.deleteBook);
+  const setActiveBook = useBookStore((state) => state.setActiveBook);
+  const clearBookActionErrors = useBookStore((state) => state.clearBookActionErrors);
+  const [bookToDelete, setBookToDelete] = useState(null);
+  const [bookToEdit, setBookToEdit] = useState(null);
 
   // useEffect-kan wuxuu shaqeeyaa marka page-ku furmo.
   // Ujeeddadiisu waa inuu API-ga ka soo qaado books-ka oo store-ka ku shubo.
@@ -39,6 +53,70 @@ function HomePage() {
     { label: 'Available', value: availableBooks },
     { label: 'Borrowed', value: borrowedBooks },
   ];
+
+  // Handler-kan wuxuu user-ka geeynayaa page-ka details-ka isagoo store-ka
+  // ku sii dhigaya book-ga la doortay si transition-ku u noqdo mid jilicsan.
+  const handleViewDetails = (book) => {
+    setActiveBook(book);
+    navigate(`/books/${book._id}`);
+  };
+
+  // Edit button-ka marka la taabto, modal-ka update-ga ayaan furnaa.
+  const handleOpenEditModal = (book) => {
+    clearBookActionErrors();
+    setBookToEdit(book);
+  };
+
+  // Close-kan wuxuu xirayaa modal-ka update-ga.
+  const handleCloseEditModal = () => {
+    if (isUpdating) {
+      return;
+    }
+
+    setBookToEdit(null);
+    clearBookActionErrors();
+  };
+
+  // Delete button-ka marka la taabto, confirmation dialog-ka ayaan furnaa.
+  const handleOpenDeleteDialog = (book) => {
+    clearBookActionErrors();
+    setBookToDelete(book);
+  };
+
+  // Close-kan wuxuu xiraa confirmation dialog-ka marka delete-ku aanu socon.
+  const handleCloseDeleteDialog = () => {
+    if (isDeleting) {
+      return;
+    }
+
+    setBookToDelete(null);
+    clearBookActionErrors();
+  };
+
+  // Function-kan wuxuu dhammaystirayaa delete functionality-ga adigoo
+  // marka hore helaya xaqiijinta user-ka kadibna API-ga wacaya.
+  const handleConfirmDelete = async () => {
+    if (!bookToDelete) {
+      return;
+    }
+
+    const result = await deleteBook(bookToDelete._id);
+
+    if (result.success) {
+      setBookToDelete(null);
+    }
+  };
+
+  // Function-kan wuxuu update modal-ka ka helaa data cusub, kadib store-ka ayuu u diraa.
+  const handleUpdateBook = async (bookId, bookData) => {
+    const result = await updateBook(bookId, bookData);
+
+    if (result.success) {
+      setBookToEdit(null);
+    }
+
+    return result;
+  };
 
   return (
     <>
@@ -120,7 +198,13 @@ function HomePage() {
           {/* Haddii books jiraan, mid walba card gooni ah ayaan uga sameyneynaa */}
           {!isLoading && !error
             ? books.map((book) => (
-                <BookCard key={book._id} book={book} />
+                <BookCard
+                  key={book._id}
+                  book={book}
+                  onViewDetails={handleViewDetails}
+                  onEdit={handleOpenEditModal}
+                  onDelete={handleOpenDeleteDialog}
+                />
               ))
             : null}
         </div>
@@ -133,6 +217,32 @@ function HomePage() {
       >
         Sample contact area for your next frontend section.
       </section>
+
+      {/* Confirmation dialog-kan wuxuu dhammaystirayaa delete flow-ga */}
+      <ConfirmationDialog
+        isOpen={Boolean(bookToDelete)}
+        title="Delete this book?"
+        message={
+          bookToDelete
+            ? `Ma hubtaa inaad tirtirayso "${bookToDelete.title}"? Marka la tirtiro dib looma soo celin karo.`
+            : ''
+        }
+        confirmLabel="Delete Book"
+        isConfirming={isDeleting}
+        errorMessage={deleteError}
+        onConfirm={handleConfirmDelete}
+        onClose={handleCloseDeleteDialog}
+      />
+
+      {/* Modal-kan wuxuu qabtaa design-ka iyo functionality-ga update-ga */}
+      <UpdateBookModal
+        isOpen={Boolean(bookToEdit)}
+        book={bookToEdit}
+        isUpdating={isUpdating}
+        errorMessage={updateError}
+        onClose={handleCloseEditModal}
+        onSubmit={handleUpdateBook}
+      />
     </>
   );
 }

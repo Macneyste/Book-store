@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import AddBookPage from './pages/AddBookPage.jsx';
+import BookDetailsPage from './pages/BookDetailsPage.jsx';
 import HomePage from './pages/HomePage.jsx';
 
 // App waa root component-ka ugu weyn ee frontend-ka.
@@ -20,6 +21,9 @@ function App() {
 
           {/* Page-ka lagu gelinayo book cusub */}
           <Route path="/add-book" element={<AddBookPage />} />
+
+          {/* Page-ka lagu arko faahfaahinta hal book */}
+          <Route path="/books/:id" element={<BookDetailsPage />} />
 
           {/* Haddii user-ku galo route aan jirin, home page ayaan dib ugu celinaynaa */}
           <Route path="*" element={<Navigate to="/" replace />} />

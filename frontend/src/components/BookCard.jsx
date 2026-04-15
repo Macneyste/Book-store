@@ -50,7 +50,7 @@ function formatDate(dateValue) {
 
 // BookCard component-kan wuxuu books-ka frontend-ka uga dhigaa muuqaal card ah
 // oo la mid ah sample-ka aad rabtay: sawir kore, xogta book-ga bartamaha, iyo actions hoose.
-function BookCard({ book }) {
+function BookCard({ book, onViewDetails, onEdit, onDelete }) {
   const uploadedAt = formatDate(book.createdAt);
   const updatedAt = formatDate(book.updatedAt);
 
@@ -99,17 +99,29 @@ function BookCard({ book }) {
       </div>
 
       <div className="flex flex-wrap items-center gap-4 border-t border-indigo-100 pt-3 text-[0.95rem] text-rose-700">
-        <button type="button" className="inline-flex items-center gap-2 transition hover:text-rose-800">
+        <button
+          type="button"
+          onClick={() => onViewDetails(book)}
+          className="inline-flex items-center gap-2 transition hover:text-rose-800"
+        >
           <MoreIcon />
           <span>More</span>
         </button>
 
-        <button type="button" className="inline-flex items-center gap-2 transition hover:text-rose-800">
+        <button
+          type="button"
+          onClick={() => onEdit(book)}
+          className="inline-flex items-center gap-2 transition hover:text-rose-800"
+        >
           <EditIcon />
           <span>Edit</span>
         </button>
 
-        <button type="button" className="inline-flex items-center gap-2 transition hover:text-rose-800">
+        <button
+          type="button"
+          onClick={() => onDelete(book)}
+          className="inline-flex items-center gap-2 transition hover:text-rose-800"
+        >
           <DeleteIcon />
           <span>Delete</span>
         </button>
