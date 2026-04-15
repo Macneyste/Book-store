@@ -1,13 +1,92 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useBookStore from '../store/useBookStore.js';
+
 const publishingTips = [
   'Ku qor cinwaan gaaban oo si cad u qeexaya magaca buugga.',
   'Hubi in image URL-ku yahay link toos ah oo ku dhammaan kara sawir.',
   'Description-ku ha noqdo mid kooban laakiin sharxaya waxa buuggu ka hadlayo.',
 ];
 
+const initialFormData = {
+  title: '',
+  author: '',
+  description: '',
+  language: '',
+  price: '',
+  cover_image_url: '',
+};
+
 // AddBookPage waa page-ka loogu talagalay in user-ku ku buuxiyo form
 // si uu u abuuro book cusub. Halkan waxaan diiradda saarnay design muuqaal
 // ahaan ka nadiifsan, si page-ku u ekaado form dhab ah oo admin isticmaali karo.
 function AddBookPage() {
+  const navigate = useNavigate();
+  const createBook = useBookStore((state) => state.createBook);
+  const isCreating = useBookStore((state) => state.isCreating);
+  const createError = useBookStore((state) => state.createError);
+  const [formData, setFormData] = useState(initialFormData);
+  const [validationError, setValidationError] = useState('');
+
+  // Function-kan wuxuu maamulaa isbeddel kasta oo ka yimaada inputs-ka form-ka.
+  // Waxa uu keydiyaa xogta cusub ee user-ku galinayo si preview-gu isla markiiba u cusboonaado.
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((currentData) => ({
+      ...currentData,
+      [name]: value,
+    }));
+  };
+
+  // Function-kan wuxuu hubiyaa in fields-ka muhiimka ahi buuxaan kahor inta request la dirin.
+  const validateForm = () => {
+    if (
+      !formData.title.trim() ||
+      !formData.author.trim() ||
+      !formData.description.trim() ||
+      !formData.language.trim() ||
+      !formData.price
+    ) {
+      return 'Please fill in title, author, description, language, and price.';
+    }
+
+    return '';
+  };
+
+  // submit-kan wuxuu backend-ka u diraa book-ga cusub.
+  // Haddii request-ku guuleysto, user-ka waxaa dib loogu celinayaa Home page-ka.
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formError = validateForm();
+
+    if (formError) {
+      setValidationError(formError);
+      return;
+    }
+
+    setValidationError('');
+
+    const result = await createBook({
+      title: formData.title.trim(),
+      author: formData.author.trim(),
+      description: formData.description.trim(),
+      language: formData.language.trim(),
+      price: formData.price,
+      cover_image_url: formData.cover_image_url.trim(),
+    });
+
+    if (result.success) {
+      setFormData(initialFormData);
+      navigate('/');
+    }
+  };
+
+  const previewTitle = formData.title.trim() || 'Your next featured book';
+  const previewAuthor = formData.author.trim() || 'Add author name here';
+  const previewPrice = formData.price || '20';
+  const previewImage = formData.cover_image_url.trim();
+
   return (
     <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
       {/* Qaybtan bidix waxay xambaarsan tahay header-ka iyo form-ka book-ga cusub */}
@@ -43,13 +122,23 @@ function AddBookPage() {
           </div>
 
           {/* Form-kan wuxuu soo ururinayaa xogta muhiimka ah ee book cusub */}
-          <form className="mt-6 grid gap-5 sm:grid-cols-2">
+          <form onSubmit={handleSubmit} className="mt-6 grid gap-5 sm:grid-cols-2">
+            {/* Haddii validation ama backend error dhaco, fariin cad ayaan user-ka tusineynaa */}
+            {validationError || createError ? (
+              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 sm:col-span-2">
+                {validationError || createError}
+              </div>
+            ) : null}
+
             {/* Field-ka title */}
             <label className="grid gap-2 text-sm font-medium text-slate-700">
               Title
               <input
+                name="title"
                 type="text"
                 placeholder="Atomic Habits"
+                value={formData.title}
+                onChange={handleChange}
                 className="rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3.5 outline-none transition focus:border-orange-400 focus:bg-white"
               />
             </label>
@@ -58,8 +147,11 @@ function AddBookPage() {
             <label className="grid gap-2 text-sm font-medium text-slate-700">
               Author
               <input
+                name="author"
                 type="text"
                 placeholder="James Clear"
+                value={formData.author}
+                onChange={handleChange}
                 className="rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3.5 outline-none transition focus:border-orange-400 focus:bg-white"
               />
             </label>
@@ -68,8 +160,11 @@ function AddBookPage() {
             <label className="grid gap-2 text-sm font-medium text-slate-700 sm:col-span-2">
               Description
               <textarea
+                name="description"
                 rows="5"
                 placeholder="Ku qor sharaxaad kooban oo ku saabsan buugga..."
+                value={formData.description}
+                onChange={handleChange}
                 className="rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3.5 outline-none transition focus:border-orange-400 focus:bg-white"
               />
             </label>
@@ -78,8 +173,11 @@ function AddBookPage() {
             <label className="grid gap-2 text-sm font-medium text-slate-700">
               Language
               <input
+                name="language"
                 type="text"
                 placeholder="English"
+                value={formData.language}
+                onChange={handleChange}
                 className="rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3.5 outline-none transition focus:border-orange-400 focus:bg-white"
               />
             </label>
@@ -88,8 +186,13 @@ function AddBookPage() {
             <label className="grid gap-2 text-sm font-medium text-slate-700">
               Price
               <input
+                name="price"
                 type="number"
+                min="0"
+                step="0.01"
                 placeholder="20"
+                value={formData.price}
+                onChange={handleChange}
                 className="rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3.5 outline-none transition focus:border-orange-400 focus:bg-white"
               />
             </label>
@@ -98,8 +201,11 @@ function AddBookPage() {
             <label className="grid gap-2 text-sm font-medium text-slate-700 sm:col-span-2">
               Cover Image URL
               <input
+                name="cover_image_url"
                 type="url"
                 placeholder="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=800&q=80"
+                value={formData.cover_image_url}
+                onChange={handleChange}
                 className="rounded-2xl border border-slate-200 bg-stone-50 px-4 py-3.5 outline-none transition focus:border-orange-400 focus:bg-white"
               />
             </label>
@@ -107,10 +213,11 @@ function AddBookPage() {
             {/* Action buttons-kan waa kuwa hoose ee form-ka */}
             <div className="flex flex-wrap items-center gap-3 pt-2 sm:col-span-2">
               <button
-                type="button"
+                type="submit"
+                disabled={isCreating}
                 className="rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
               >
-                Save Book
+                {isCreating ? 'Saving...' : 'Save Book'}
               </button>
               <button
                 type="button"
@@ -141,29 +248,35 @@ function AddBookPage() {
           </div>
 
           <div className="mt-6 rounded-[1.6rem] bg-[linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_100%)] p-6">
-            <div className="mx-auto flex h-72 w-48 items-center justify-center rounded-[1rem] bg-[#1f2937] shadow-[12px_0_0_#d6d3d1,22px_0_0_#f4f4f5]">
-              <div className="px-5 text-center">
-                <p className="text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-slate-300">
-                  Book Store
-                </p>
-                <h3 className="mt-5 text-3xl font-black leading-none text-orange-300">
-                  NEW
-                </h3>
-                <p className="mt-3 text-lg font-bold text-sky-300">BOOK</p>
+            {previewImage ? (
+              <img
+                src={previewImage}
+                alt={previewTitle}
+                className="mx-auto h-72 w-48 rounded-[1rem] object-cover shadow-[12px_0_0_#d6d3d1,22px_0_0_#f4f4f5]"
+              />
+            ) : (
+              <div className="mx-auto flex h-72 w-48 items-center justify-center rounded-[1rem] bg-[#1f2937] shadow-[12px_0_0_#d6d3d1,22px_0_0_#f4f4f5]">
+                <div className="px-5 text-center">
+                  <p className="text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-slate-300">
+                    Book Store
+                  </p>
+                  <h3 className="mt-5 text-3xl font-black leading-none text-orange-300">
+                    NEW
+                  </h3>
+                  <p className="mt-3 text-lg font-bold text-sky-300">BOOK</p>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="mt-6 space-y-2 text-sm text-slate-600">
               <p>
-                <span className="font-semibold text-slate-900">Title:</span> Your next
-                featured book
+                <span className="font-semibold text-slate-900">Title:</span> {previewTitle}
               </p>
               <p>
-                <span className="font-semibold text-slate-900">Author:</span> Add author
-                name here
+                <span className="font-semibold text-slate-900">Author:</span> {previewAuthor}
               </p>
               <p>
-                <span className="font-semibold text-slate-900">Price:</span> $20
+                <span className="font-semibold text-slate-900">Price:</span> ${previewPrice}
               </p>
             </div>
           </div>

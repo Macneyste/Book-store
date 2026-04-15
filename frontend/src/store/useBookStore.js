@@ -10,8 +10,14 @@ const useBookStore = create((set) => ({
   // isLoading: wuxuu sheegaa in request-ku wali socdo iyo in kale.
   isLoading: false,
 
+  // isCreating: wuxuu sheegaa in POST request-ka abuurista book-ga uu socdo iyo in kale.
+  isCreating: false,
+
   // error: fariinta qaladka haddii request-ku fashilmo.
   error: '',
+
+  // createError: qaladka gaarka u ah abuurista book-ga cusub.
+  createError: '',
 
   // fetchBooks: function-kan wuxuu kasoo qaadaa books-ka backend API-ga.
   // signal-ka waxaa loo isticmaalaa in request-ka la joojiyo marka component-ku
@@ -46,6 +52,45 @@ const useBookStore = create((set) => ({
         error: error.message || 'Something went wrong while fetching books',
         isLoading: false,
       });
+    }
+  },
+
+  // createBook: function-kan wuxuu backend-ka ugu diraa book cusub si database-ka loogu kaydiyo.
+  // Marka uu guuleysto, book-ga cusub si toos ah ayuu ugu daraa liiska books-ka store-ka ku jira.
+  createBook: async (bookData) => {
+    try {
+      set({ isCreating: true, createError: '' });
+
+      const payload = {
+        ...bookData,
+        price: Number(bookData.price),
+        cover_image_url: bookData.cover_image_url?.trim() || undefined,
+      };
+
+      const response = await fetch('/api/books', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create book');
+      }
+
+      set((state) => ({
+        books: [data, ...state.books],
+        isCreating: false,
+      }));
+
+      return { success: true, book: data };
+    } catch (error) {
+      const message = error.message || 'Something went wrong while creating the book';
+      set({ createError: message, isCreating: false });
+      return { success: false, error: message };
     }
   },
 }));
