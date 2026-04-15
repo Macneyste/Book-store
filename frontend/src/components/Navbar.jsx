@@ -1,48 +1,59 @@
-const navLinks = [
-  { label: 'Home', href: '#' },
-  { label: 'Books', href: '#books' },
-  { label: 'Stats', href: '#stats' },
-  { label: 'Contact', href: '#contact' },
-];
+import { Link, NavLink } from 'react-router-dom';
+
+function HomeIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-4 w-4 fill-current"
+    >
+      <path d="M12 3.8 3 11.2V13h1.8v7.2h5.8v-4.9h2.8v4.9h5.8V13H21v-1.8L12 3.8Z" />
+    </svg>
+  );
+}
+
+function AddIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-4 w-4 fill-none stroke-current stroke-[2]"
+    >
+      <rect x="4.5" y="4.5" width="15" height="15" rx="2.5" />
+      <path d="M12 8v8M8 12h8" />
+    </svg>
+  );
+}
 
 function Navbar() {
+  const navLinkClassName = ({ isActive }) =>
+    `inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-base font-medium transition ${
+      isActive
+        ? 'border-slate-900 bg-slate-900 text-white'
+        : 'border-slate-300 bg-white/75 text-slate-900 hover:bg-white'
+    }`;
+
   return (
     <header className="mb-8">
-      <nav className="flex flex-col gap-4 rounded-[1.75rem] border border-slate-200 bg-white/90 px-5 py-4 shadow-lg shadow-slate-200/60 backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <div className="flex items-center justify-between gap-4">
-          <a href="#" className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-sm font-bold text-white">
-              BK
-            </span>
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-orange-500">
-                Book Store
-              </p>
-              <h2 className="text-lg font-bold text-slate-900">Book Store</h2>
-            </div>
-          </a>
+      <nav className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-slate-300 bg-[#d7dbe2]/80 px-6 py-3 shadow-sm backdrop-blur">
+        <Link to="/" className="relative flex items-center">
+          <span className="absolute left-[-14px] top-1/2 h-16 w-16 -translate-y-1/2 rounded-full bg-yellow-200/35 blur-[1px]" />
+          <span className="relative text-[2rem] font-black tracking-tight">
+            <span className="text-teal-500">Book</span>
+            <span className="text-slate-800">Store</span>
+          </span>
+        </Link>
 
-          <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 sm:hidden">
-            Menu
-          </button>
-        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <NavLink to="/" end className={navLinkClassName}>
+            <HomeIcon />
+            <span>Home</span>
+          </NavLink>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-slate-600">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="rounded-full px-3 py-2 transition hover:bg-stone-100 hover:text-slate-900"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-
-          <button className="rounded-full bg-orange-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-600">
-            Add Book
-          </button>
+          <NavLink to="/add-book" className={navLinkClassName}>
+            <AddIcon />
+            <span>Add Book</span>
+          </NavLink>
         </div>
       </nav>
     </header>
