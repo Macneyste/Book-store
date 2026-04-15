@@ -77,7 +77,7 @@ export const saveBook = async (request, response) => {
     }
 };
 
-// Function-kan wuxuu cusbooneysiiyaa book jira iyadoo la adeegsanayo id-ga.
+// Update book end-point
 export const updateBook = async (request, response) => {
     const { id } = request.params;
 
@@ -85,7 +85,7 @@ export const updateBook = async (request, response) => {
     const updateData = request.body ?? {};
 
     // Haddii id-ga uusan sax ahayn, request-ka waa la diidayaa.
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.isValidObjectId(id)) {
         return response.status(400).json({ message: 'Invalid book id' });
     }
 
@@ -97,7 +97,7 @@ export const updateBook = async (request, response) => {
     }
 
     try {
-        // Halkan waxaan ku update gareyneynaa book-ga la helay.
+        // Halkan waxaan ku update gareyneynaa book-ga la helay anagoo adeegsaneyna Mongoose method-ka findByIdAndUpdate().
         // new: true wuxuu soo celinayaa xogta cusub, runValidators-na wuxuu hubiyaa schema-ga.
         const updatedBook = await Book.findByIdAndUpdate(id, updateData, {
             new: true,
